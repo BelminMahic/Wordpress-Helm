@@ -4,7 +4,7 @@ metadata:
   name: {{ .Release.Name }}-pvc-mysql
   {{- include "namespace" . }}
 spec:
-  accessMode:
+  accessModes:
   {{- range .Values.persistentVolume.accessModes }}
     - {{ . | quote }}
   {{- end }}

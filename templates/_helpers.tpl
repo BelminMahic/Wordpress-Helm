@@ -5,3 +5,7 @@
 {{ define "sts-labels"}}
   app: mysql
 {{- end }}
+
+{{ define "deploy-labels" }}
+  app: wordpress
+{{- end }}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  name: {{ .Release.Name }}-svc
+  {{- include "namespace" . }}
+spec:
+  type: {{.Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.image.containerPort }}
+      nodePort: {{ .Values.service.nodePort }}
+  selector:
+  {{- include "deploy-labels" . | indent 2 }}

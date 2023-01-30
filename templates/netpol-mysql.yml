@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-netpol-mysql
+  {{- include "namespace" .}}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "sts-labels" . | indent 4 }}
+  policyTypes:
+  {{- range .Values.networkPolicies.policyTypes }}
+    - {{ . | quote }}
+  {{- end }}
+  ingress:
+    - from:
+       - ipBlock:
+          cidr: {{ .Values.networkPolicies.cidr }}
+       - podSelector:
+           matchLabels:
+           {{- include "deploy-labels" . | indent 10 }}
+      ports:
+        - protocol: {{ .Values.networkPolicies.protocol }}
+          port: {{ .Values.imageDatabase.containerPort }}
