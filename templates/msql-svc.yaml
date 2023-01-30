@@ -9,4 +9,4 @@ spec:
     - port: {{ .Values.serviceDatabase.port }}
       targetPort: {{ .Values.imageDatabase.containerPort }}
   selector:
-  {{- include "sts-labels" . | indent 2}}
+  {{- include "sts-labels" . | indent 2 }}
