@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Release.Name }}-pv-mysql
+  {{- include "namespace" . }}
+spec:
+  accessMode: 
+{{- range .Values.persistentVolume.accessModes }}
+    - {{ . | quote }}
+{{- end }}
+  capacity:
+    storage: {{ .Values.persistentVolume.capacity }}
+  {{- if .Values.persistentVolume.className }}
+    storageClassName: {{ .Release.Name }}-storageclass
+  {{- else }}
+  storageClassName: {{ .Values.persistentVolume.className | quote }}
+  {{- end }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistentVolume.reclaimPolicy }}
+  hostPath:
+    path: {{ .Values.persistentVolume.hostPath }}
+  claimRef:
+    name: {{ .Release.Name }}-pvc-mysql
+    {{- include "namespace" . | indent 2 }}

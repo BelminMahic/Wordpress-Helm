@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-sts-mysql
+  {{- include "namespace" . }}
+spec:
+  replicas: {{ .Values.replicaCountDatabase }}
+  selector:
+    matchLabels:
+      {{- include "sts-labels" . | indent 4 }}
+  template:
+    metadata:
+      {{- include "sts-labels" . | indent 4 }}
+    spec:
+      securityContext:
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.securityContext.runAsGroup }}
+      containers:
+        - image: {{ .Values.imageDatabase.repository }}:{{ .Values.imageDatabase.tag }}
+          name: {{ .Values.imageDatabase.repository }}
+          ports:
+            - containerPort: {{ .Values.imageDatabase.containerPort }}
+          envFrom:
+            - secretRef:
+                name: {{ .Release.Name }}-mysql-secret
+          volumeMounts:
+            - name: {{ .Values.podPersistentVolume.name }}
+              mountPath: {{ .Values.podPersistentVolume.mountPath }}
+      initContainers:
+        - name: {{ .Values.imageInitContainer.name }}
+          image: {{ .Values.imageInitContainer.repository }}:{{ .Values.imageInitContainer.tag }}
+          securityContext:
+            runAsUser: {{ .Values.podSecurityContext.runAsUser }}
+          volumeMounts:
+            - name: {{ .Values.podPersistentVolume.name }}
+              mountPath: {{ .Values.podPersistentVolume.mountPath }}
+          command: ["sh", "-c" , "chown -R 65534:65534 /var/lib/mysql"]
+    
+      volumes: ##investigate in the future
+        - name: {{ .Values.podPersistentVolume.name }}
+          persistentVolumeClaim:
+            claimRef: {{ .Release.Name }}-pvc-mysql

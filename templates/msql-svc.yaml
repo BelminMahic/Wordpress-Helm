@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-mysql-svc
+  {{- include "namespace" . }}
+spec:
+  type: {{ .Values.serviceDatabase.type }}
+  ports:
+    - port: {{ .Values.serviceDatabase.port }}
+      targetPort: {{ .Values.imageDatabase.containerPort }}
+  selector:
+  {{- include "sts-labels" . | indent 2}}
