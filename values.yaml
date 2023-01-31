@@ -108,6 +108,12 @@ executeCommand:
     - 5000
     - curl /readme.html:80
 
+executeStatefulCommand:
+  steps:
+    - sh
+    - -c
+    - chown -R 65534:65534 /var/lib/mysql
+
 autoscaling:
   enabled: false
   minReplicas: 1

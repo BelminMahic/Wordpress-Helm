@@ -36,7 +36,10 @@ spec:
           volumeMounts:
             - name: {{ .Values.podPersistentVolume.name }}
               mountPath: {{ .Values.podPersistentVolume.mountPath }}
-          command: ["sh", "-c" , "chown -R 65534:65534 /var/lib/mysql"]
+          command: 
+            {{- range .Values.executeStatefulCommand.steps }}
+            - {{ . | quote }}
+            {{- end }}
     
       volumes: ## investigate in the future
         - name: {{ .Values.podPersistentVolume.name }}
