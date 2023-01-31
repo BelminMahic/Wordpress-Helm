@@ -1,5 +1,5 @@
 # Step to install helm chart
 
 ```
-helm install wordpress .\wordpress-helm\ -n cka --create-namespace
+helm install wordpress <PATH_TO_HELM_CHART> -n cka --create-namespace
 ```
